@@ -497,3 +497,4 @@ zict @ file:///Users/builder/cbouss/perseverance-python-buildout/croot/zict_1699
 zipp @ file:///private/var/folders/k1/30mswbxs7r1g6zwn8y4fyt500000gp/T/abs_echurpkwug/croot/zipp_1732630743967/work
 zope.interface @ file:///private/var/folders/nz/j6p8yfhx1mv_0grj5xl4650h0000gp/T/abs_7dsjn2o7u7/croot/zope.interface_1731939363412/work
 zstandard @ file:///private/var/folders/k1/30mswbxs7r1g6zwn8y4fyt500000gp/T/abs_a5_i6g4o6n/croot/zstandard_1731356352787/work
+
