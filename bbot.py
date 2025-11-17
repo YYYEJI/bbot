@@ -1,10 +1,6 @@
-# rag_graph.py
-# -*- coding: utf-8 -*-
-
 import os
 import json
 from datetime import datetime
-from dotenv import load_dotenv
 from langchain.docstore.document import Document
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import Chroma
