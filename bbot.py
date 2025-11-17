@@ -17,9 +17,8 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 
 # 🔹 환경 변수 로드
-load_dotenv()
-api_key = os.getenv("UPSTAGE_API_KEY")
-base_url = os.getenv("UPSTAGE_BASE_URL")
+api_key = os.environ["UPSTAGE_API_KEY"]
+base_url = os.environ["UPSTAGE_BASE_URL"]
 
 # 🔹 Upstage 모델
 from openai import OpenAI
