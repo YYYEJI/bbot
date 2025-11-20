@@ -1,0 +1,15 @@
+# Ignore big files
+book_curious.pdf
+chroma_db/
+__pycache__/
+.env
+*.env
+metas.json
+
+# Streamlit cache
+.streamlit/
+
+# Python cache
+*.pyc
+*.pyo
+*.pyd
