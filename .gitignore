@@ -4,7 +4,6 @@ chroma_db/
 __pycache__/
 .env
 *.env
-metas.json
 
 # Streamlit cache
 .streamlit/
