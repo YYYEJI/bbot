@@ -1,7 +1,7 @@
 import os
 import json
 from datetime import datetime
-from langchain.docstore.document import Document
+from langchain_core.documents import Document
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import Chroma
 from langchain_upstage import UpstageEmbeddings
