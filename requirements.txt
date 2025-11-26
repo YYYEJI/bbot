@@ -3,7 +3,7 @@ langchain
 langchain-community
 langchain-upstage
 pydantic
-typing_extensions
+typing-extensions
 chromadb
 openai
 pymupdf
