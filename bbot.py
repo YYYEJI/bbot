@@ -1,11 +1,7 @@
-# rag_graph.py
-# -*- coding: utf-8 -*-
-
 import os
 import json
 from datetime import datetime
-from dotenv import load_dotenv
-from langchain.docstore.document import Document
+from langchain_core.documents import Document
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import Chroma
 from langchain_upstage import UpstageEmbeddings
@@ -17,9 +13,8 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 
 # 🔹 환경 변수 로드
-load_dotenv()
-api_key = os.getenv("UPSTAGE_API_KEY")
-base_url = os.getenv("UPSTAGE_BASE_URL")
+api_key = os.environ["UPSTAGE_API_KEY"]
+base_url = os.environ["UPSTAGE_BASE_URL"]
 
 # 🔹 Upstage 모델
 from openai import OpenAI
@@ -29,6 +24,7 @@ model = OpenAI(api_key=api_key, base_url=base_url)
 # DB 생성 및 문서 처리
 # =========================
 def create_db(metas: List[dict], persist_dir: str = "./chroma_db") -> Chroma:
+    """메타 데이터를 기반으로 Chroma VectorStore 생성"""
     docs = [
         Document(
             page_content=m["Content"],
@@ -36,10 +32,14 @@ def create_db(metas: List[dict], persist_dir: str = "./chroma_db") -> Chroma:
         )
         for m in metas
     ]
+    # 텍스트 분할
     splitter = RecursiveCharacterTextSplitter(chunk_size=3500, chunk_overlap=100)
     split_docs = splitter.split_documents(docs)
     
+    # 임베딩 모델
     embedding_model = UpstageEmbeddings(upstage_api_key=api_key, model="embedding-query")
+    
+    # Chroma DB
     db = Chroma.from_documents(documents=split_docs, embedding=embedding_model, persist_directory=persist_dir)
     return db
 
@@ -55,8 +55,12 @@ def detect_language(text: str) -> str:
 
 
 # =========================
-# RAG/일반 답변 + 언어별 답변 generate()
+# RAG 관련 함수
 # =========================
+def web_search(question: str) -> str:
+    # 웹 검색 placeholder
+    return "웹 검색 결과 텍스트"
+
 def generate(question: str) -> str:
     lang = detect_language(question)
 
@@ -66,12 +70,11 @@ def generate(question: str) -> str:
     else:
         lang_instruction = "The user asked in English, so answer naturally and fluently in English."
 
-    system_prompt = f"""
+
+    system_prompt = """
     당신은 기독교적 관점에서 답변하는 전문가입니다.
     질문이 일반적이거나 과학적이어도, 답변에 반드시 성경적 또는 기독교적 관점을 반영해야 합니다.
-    {lang_instruction}
     """
-
     response = model.chat.completions.create(
         model="solar-pro2",
         messages=[
@@ -81,7 +84,6 @@ def generate(question: str) -> str:
         temperature=0
     )
     return response.choices[0].message.content
-
 
 # =========================
 # Question Rewriting
@@ -106,7 +108,6 @@ def upstage_rewriter(prompt_value):
 
 chain_rewriter = prompt_rewriter | RunnableLambda(upstage_rewriter) | StrOutputParser()
 
-
 # =========================
 # Relevancy 판단
 # =========================
@@ -126,7 +127,6 @@ Respond strictly in valid JSON only."""
     data = json.loads(response.choices[0].message.content)
     return Relevancy(**data)
 
-
 # =========================
 # Factfulness 판단
 # =========================
@@ -145,7 +145,6 @@ Respond strictly in valid JSON only."""
     )
     data = json.loads(response.choices[0].message.content)
     return Factfulness(**data)
-
 
 # =========================
 # State 정의
