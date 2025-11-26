@@ -43,6 +43,17 @@ def create_db(metas: List[dict], persist_dir: str = "./chroma_db") -> Chroma:
     db = Chroma.from_documents(documents=split_docs, embedding=embedding_model, persist_directory=persist_dir)
     return db
 
+
+# =========================
+# 언어 자동 감지 함수
+# =========================
+def detect_language(text: str) -> str:
+    """한국어 포함 여부로 언어 감지"""
+    if any('\uac00' <= ch <= '\ud7a3' for ch in text):
+        return "ko"
+    return "en"
+
+
 # =========================
 # RAG 관련 함수
 # =========================
@@ -51,10 +62,15 @@ def web_search(question: str) -> str:
     return "웹 검색 결과 텍스트"
 
 def generate(question: str) -> str:
-    """
-    - 일반 질문은 LLM에게 답변
-    - 모든 답변에 기독교적 관점을 포함
-    """
+    lang = detect_language(question)
+
+    # 언어별 LLM 명령 생성
+    if lang == "ko":
+        lang_instruction = "사용자 질문이 한국어이므로 한국어로 자연스럽게 답변하세요."
+    else:
+        lang_instruction = "The user asked in English, so answer naturally and fluently in English."
+
+
     system_prompt = """
     당신은 기독교적 관점에서 답변하는 전문가입니다.
     질문이 일반적이거나 과학적이어도, 답변에 반드시 성경적 또는 기독교적 관점을 반영해야 합니다.
