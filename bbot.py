@@ -11,13 +11,20 @@ from typing_extensions import TypedDict
 from langchain_core.runnables import RunnableLambda
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
+from dotenv import load_dotenv
+from openai import OpenAI
+
+
+load_dotenv()
+base_url = os.getenv("SUPABASE_URL")
 
 # 🔹 환경 변수 로드
+api_key = os.getenv("UPSTAGE_API_KEY")
 api_key = os.environ["UPSTAGE_API_KEY"]
 base_url = os.environ["UPSTAGE_BASE_URL"]
 
 # 🔹 Upstage 모델
-from openai import OpenAI
+
 model = OpenAI(api_key=api_key, base_url=base_url)
 
 # =========================
@@ -64,17 +71,18 @@ def web_search(question: str) -> str:
 def generate(question: str) -> str:
     lang = detect_language(question)
 
-    # 언어별 LLM 명령 생성
     if lang == "ko":
         lang_instruction = "사용자 질문이 한국어이므로 한국어로 자연스럽게 답변하세요."
     else:
         lang_instruction = "The user asked in English, so answer naturally and fluently in English."
 
-
-    system_prompt = """
+    system_prompt = f"""
     당신은 기독교적 관점에서 답변하는 전문가입니다.
     질문이 일반적이거나 과학적이어도, 답변에 반드시 성경적 또는 기독교적 관점을 반영해야 합니다.
+
+    {lang_instruction}
     """
+
     response = model.chat.completions.create(
         model="solar-pro2",
         messages=[
