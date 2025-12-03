@@ -13,15 +13,27 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 from dotenv import load_dotenv
 from openai import OpenAI
+import psycopg2
 
-
-load_dotenv()
-base_url = os.getenv("SUPABASE_URL")
 
 # 🔹 환경 변수 로드
+load_dotenv()
+
 api_key = os.getenv("UPSTAGE_API_KEY")
-api_key = os.environ["UPSTAGE_API_KEY"]
-base_url = os.environ["UPSTAGE_BASE_URL"]
+base_url = os.getenv("UPSTAGE_BASE_URL")
+
+
+# 🔹 DB 연결
+conn = psycopg2.connect(
+    host=os.getenv("DB_HOST"),
+    dbname=os.getenv("DB_NAME"),
+    user=os.getenv("DB_USER"),
+    password=os.getenv("DB_PASSWORD"),
+    port=os.getenv("DB_PORT")
+)
+cur = conn.cursor()
+print("DB 연결 성공")
+
 
 # 🔹 Upstage 모델
 
