@@ -8,8 +8,9 @@ with open("metas.json", "r", encoding="utf-8") as f:
     metas = json.load(f)
 
 # 🔹 DB 한 번만 생성
-if "db" not in st.session_state:
-    st.session_state.db = create_db(metas)
+if "db_initialized" not in st.session_state:
+    create_db(metas)
+    st.session_state.db_initialized = True
 
 # 🔹 채팅 기록 초기화
 if "messages" not in st.session_state:
@@ -29,7 +30,7 @@ if prompt := st.chat_input("창조과학 관련 질문해주세요 :)"):
     st.session_state.messages.append({"role": "user", "content": prompt})
 
     # 🔹 RAG 답변
-    response = generate(prompt)
+    response = generate(prompt, use_rag=True)
 
     with st.chat_message("assistant"):
         st.markdown(response)
