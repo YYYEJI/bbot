@@ -16,7 +16,7 @@ if "db_initialized" not in st.session_state:
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-st.title("창조과학 RAG 챗봇 🦖")
+st.title("Creation Science AI Chatbot 🤖✨")
 
 # 🔹 이전 메시지 출력
 for msg in st.session_state.messages:
