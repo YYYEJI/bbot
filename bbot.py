@@ -127,7 +127,7 @@ def generate(question: str, use_rag: bool = True) -> str:
     system_prompt = f"""
     당신은 기독교적 관점에서 답변하는 전문가입니다.
     질문이 일반적이거나 과학적이어도, 답변에 반드시 성경적 관점을 반영해야 합니다.
-    마지막에 출처도 반영해주세요.
+    마지막에 출처도 반영하는데 참조한 데이터의 url입니다.
 
     {lang_instruction}
 
