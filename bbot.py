@@ -108,7 +108,6 @@ def retrieve_documents(question: str, db_name: str = "bbot_db", top_k: int = 5):
     cur.close()
     conn.close()
     
-    documents = [{"title": r[0], "url": r[1], "content": r[2]} for r in results]
     return documents
 
 # =========================
@@ -148,8 +147,7 @@ def generate(question: str, use_rag: bool = True) -> str:
 # =========================
 # Question Rewriter
 # =========================
-system_rewriter = """You are a question re-writer that converts an input question
-to a better version optimized for vectorstore retrieval."""
+system_rewriter = """당신은 입력된 질문을 벡터 스토어 검색에 최적화된 더 나은 버전으로 바꾸는 질문 재작성자입니다."""
 
 prompt_rewriter = ChatPromptTemplate.from_messages([
     ("system", system_rewriter),
@@ -175,8 +173,7 @@ class Relevancy(BaseModel):
     binary_score: str
 
 def is_relevant(question: str, document: str) -> Relevancy:
-    system_prompt = """You are an expert judge assessing the relevance of a document to a user question.
-Respond strictly in valid JSON only."""
+    system_prompt = """당신은 사용자의 질문과 문서의 관련성을 평가하는 전문 심사위원입니다. 응답은 반드시 유효한 JSON 형식으로만 작성해야 합니다."""
     prompt = f"""{system_prompt}\n\nRetrieved document:\n{document}\n\nUser question:\n{question}\n\nRespond in JSON format: {{"judgement": "relevant"/"not_relevant","binary_score": "yes"/"no"}}"""
     response = model.chat.completions.create(
         model="solar-pro2",
@@ -193,8 +190,7 @@ class Factfulness(BaseModel):
     binary_score: str
 
 def check_factfulness(document: str, generation: str) -> Factfulness:
-    system_prompt = """You are a judge assessing whether an LLM generation is grounded in a set of retrieved documents.
-Respond strictly in valid JSON only."""
+    system_prompt = """당신은 LLM이 생성한 내용이 검색된 문서들에 근거하고 있는지 평가하는 심사위원입니다. 응답은 반드시 유효한 JSON 형식으로만 작성해야 합니다."""
     prompt = f"{system_prompt}\n\nSet of facts:\n{document}\n\nLLM generation:\n{generation}\n\nRespond in JSON format: {{'judgement':'factual'/'hallucinated','binary_score':'yes'/'no'}}"
     response = model.chat.completions.create(
         model="solar-pro2",
