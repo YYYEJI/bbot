@@ -1,16 +1,14 @@
-# chat_ui.py
+# Bebot UI
 import streamlit as st
 import json
 from bbot import create_db, generate
 
-# 🔹 metas.json 읽기
-with open("metas.json", "r", encoding="utf-8") as f:
-    metas = json.load(f)
 
-# 🔹 DB 한 번만 생성
-if "db_initialized" not in st.session_state:
-    create_db(metas)
-    st.session_state.db_initialized = True
+# # 🔹 DB 한 번만 생성 
+# if "db_initialized" not in st.session_state:
+#     create_db("./extracted_texts")
+#     st.session_state.db_initialized = True
+
 
 # 🔹 채팅 기록 초기화
 if "messages" not in st.session_state:
@@ -18,10 +16,12 @@ if "messages" not in st.session_state:
 
 st.title("Creation Science AI Chatbot 🤖✨")
 
+
 # 🔹 이전 메시지 출력
 for msg in st.session_state.messages:
     with st.chat_message(msg["role"]):
         st.markdown(msg["content"])
+
 
 # 🔹 사용자 입력 처리
 if prompt := st.chat_input("창조과학 관련 질문해주세요 :)"):
@@ -30,7 +30,7 @@ if prompt := st.chat_input("창조과학 관련 질문해주세요 :)"):
     st.session_state.messages.append({"role": "user", "content": prompt})
 
     # 🔹 RAG 답변
-    response = generate(prompt, use_rag=True)
+    response = generate(prompt)
 
     with st.chat_message("assistant"):
         st.markdown(response)
