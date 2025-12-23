@@ -155,10 +155,6 @@ def create_db(folder_path: str, db_name: str = "bbot_db", max_tokens: int = 4000
 
 
 
-# 언어 감지
-def detect_language(text: str) -> str:
-    return "ko" if any('\uac00' <= ch <= '\ud7a3' for ch in text) else "en"
-
 # 라우터
 def router(question: str) -> str:
     """
@@ -327,42 +323,67 @@ def rewrite_query(question: str) -> str:
 
 
 # 답변 생성 
-def generate_answer(question: str, docs: List[dict]) -> str:
-    print("[Generate] 답변 생성 중...")
+def detect_language(text: str) -> str:         # 언어 감지 
+    return "ko" if any('\uac00' <= ch <= '\ud7a3' for ch in text) else "en"
+
+def build_context(docs: list[dict]) -> str:    # 문서 컨텍스트 구성
+    return "\n\n".join(
+        f"[문서]\n제목: {d['title']}\n내용: {d['content']}\nURL: {d['url']}"
+        for d in docs
+    )
+
+
+def generate_answer(question: str, docs: list[dict]) -> str:
+    if not docs:
+        return "제공된 문서에는 해당 정보가 없습니다."
 
     lang = detect_language(question)
-    lang_inst = "한국어로 답변하세요." if lang == "ko" else "Answer in English."
+    context = build_context(docs)
 
-    context = ""
-    for d in docs:
-        context += f"Title: {d['title']}\nContent: {d['content']}\nURL: {d['url']}\n\n"
+    lang_instruction = (
+        "한국어로 답변하세요." if lang == "ko"
+        else "Answer in English."
+    )
 
     system_prompt = f"""
     당신은 기독교적 세계관과 창조론에 기반해 답변하는 전문가입니다.
-    규칙:
-    - 반드시 제공된 문서 내용만 사용하세요.
-    - 문서에 없는 내용은 절대 추측하지 마세요.
-    - 정보가 없으면: "제공된 문서에는 해당 정보가 없습니다." 라고 답하세요.
-    - 답변 마지막에 사용한 문서의 URL을 포함하세요.
+
+    ❗규칙 (절대 위반 금지):
+    - 반드시 제공된 [문서] 내용만 사용하세요.
+    - 문서에 없는 정보는 절대 작성하지 마세요.
+    - 추측, 일반 상식, 사전 지식 사용 금지
+    - 답변 마지막에 사용한 문서의 URL을 모두 나열하세요.
     - 웹 검색은 성경 구절을 찾을 때만 사용하세요.
 
+    ✍️ 답변 형식:
+    - 🔬 과학적 관점
+    - 📖 성경적 관점
+    - 🔗 참고 문서 URL
 
-    {lang_inst}
+    {lang_instruction}
+    """
 
-    참고 문서:
+    user_prompt = f"""
+    [문서]
     {context}
+
+    [질문]
+    {question}
+
+    위 문서에 근거해 답변하세요.
     """
 
     res = model.chat.completions.create(
         model="solar-pro2",
         messages=[
             {"role": "system", "content": system_prompt},
-            {"role": "user", "content": question}
+            {"role": "user", "content": user_prompt},
         ],
         temperature=0
     )
 
     return res.choices[0].message.content
+
 
 
 
