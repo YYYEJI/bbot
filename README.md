@@ -46,9 +46,9 @@ UPSTAGE_API_KEY=<YOUR_UPSTAGE_API_KEY>
 UPSTAGE_BASE_URL=<YOUR_UPSTAGE_BASE_URL>
 DB_HOST=localhost
 DB_NAME=bbot_db
-DB_USER=yeji
-DB_PASSWORD=            # trust 인증이면 공백
-DB_PORT=5432
+DB_USER=rosie
+DB_PASSWORD=""
+DB_PORT=5433
 ```
 
 4.	PostgreSQL 및 pgvector 설치
@@ -90,7 +90,7 @@ streamlit run bbot_ui.py
 ## 📦 최종 산출물
 	•	bbot_ui.py : Streamlit UI 파일
 	•	bbot.py : 핵심 로직 및 DB 연동
-	•	metas.json : 크롤링 데이터
+	•	extracted_texts : 크롤링 데이터
 	•	PostgreSQL DB (bbot_db)
 	•	.env : 환경 변수
 	•	Streamlit 데모 화면에서 생성된 질의 응답 기록
