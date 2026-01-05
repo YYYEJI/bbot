@@ -35,12 +35,12 @@ def table_exists(table_name: str) -> bool:
     return exists
 
 if "db_ready" not in st.session_state:
-    print("✔️ DB 체크 중")
+    print("✅ DB 체크 중")
     if not table_exists("crawled_data"):
         with st.spinner("✔️ DB 생성 중…"):
             create_db("./extracted_texts")
     st.session_state.db_ready = True
-    print("✔️ DB 준비 완료")
+    print("✅ DB 준비 완료")
 
 
 
