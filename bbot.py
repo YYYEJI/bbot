@@ -163,7 +163,8 @@ def router(question: str) -> str:
     """
     print("[Router] 질문 의도 분석 중...")
 
-    keywords = ["창조", "성경", "하나님", "진화", "복음", "아담", "노아", "대홍수", "창세기", "기독교", "세계관", "믿음", "예수님", "구원"]
+    keywords = ["창조", "성경", "하나님", "진화", "복음", "아담", "노아", "대홍수", "창세기", "기독교", "세계관", "믿음", "예수님", "구원"
+                "Creation", "Bible", "God", "Evolution", "Gospel", "Adam", "Noah", "Great Flooad", "Genesis", "Christianity", "Worldview", "Faith", "Jesus", "Salvation"]    # 등등등
     decision = "internal" if any(k in question for k in keywords) else "internal"
 
     print(f"[Router] 선택된 경로: {decision}")
