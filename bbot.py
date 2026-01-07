@@ -351,10 +351,8 @@ def generate_answer(question: str, docs: list[dict]) -> str:
 
     규칙:
     - 반드시 제공된 [문서] 내용만 사용하세요.
-    - 문서에 없는 정보는 절대 작성하지 마세요.
     - 🔬 과학적 관점 / ✝️ 성경적 관점으로 구분
     - 답변 마지막에 사용한 문서의 URL을 모두 나열하세요.
-    - 웹 검색은 성경 구절을 찾을 때만 사용하세요.
 
     {lang_instruction}
     """
